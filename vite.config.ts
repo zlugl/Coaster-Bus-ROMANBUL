@@ -1,18 +1,19 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 
+// Build as a pure client-side SPA — all data is fetched from Firebase client-side,
+// so SSR is not needed. This produces a standard dist/ output that Vercel can serve.
 export default defineConfig({
   plugins: [
     tsconfigPaths(),
     tailwindcss(),
-    tanstackStart({
-      server: {
-        preset: "vercel",
-      },
-    }),
+    TanStackRouterVite({ autoCodeSplitting: true }),
     react(),
   ],
+  build: {
+    outDir: "dist",
+  },
 });
