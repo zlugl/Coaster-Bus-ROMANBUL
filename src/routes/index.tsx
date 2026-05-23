@@ -28,10 +28,17 @@ function Landing() {
             <span className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-amber">
               <Activity className="h-3 w-3 animate-pulse" /> Live · FIFO Queue 2026
             </span>
-            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
-              Student transport,<br />
-              <span className="text-amber">queue-fair</span> and on time.
-            </h1>
+            <div className="mt-6 flex items-center gap-4">
+              <img
+                src="/image/coasterBus-logo.png"
+                alt="CoasterBusForU"
+                className="h-16 w-16 rounded-2xl object-contain shadow-lg shadow-amber/20 sm:h-20 sm:w-20"
+              />
+              <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
+                Student transport,<br />
+                <span className="text-amber">queue-fair</span> and on time.
+              </h1>
+            </div>
             <p className="mt-6 max-w-xl text-lg text-surface-foreground/70">
               CoasterBusForU is the AI ticketing system for Romanbul students. Book a seat, get a queue number, watch your coaster in real time, and arrive with the ETA you trust.
             </p>

@@ -55,6 +55,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "FIFO queue AI ticketing system for student coaster bus transport in Romanbul, 2026." },
     ],
     links: [
+      { rel: "icon", type: "image/png", href: "/image/coasterBus-logo.png" },
+      { rel: "apple-touch-icon", href: "/image/coasterBus-logo.png" },
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },

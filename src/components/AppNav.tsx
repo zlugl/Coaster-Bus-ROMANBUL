@@ -1,5 +1,5 @@
 import { Link, useRouter } from "@tanstack/react-router";
-import { Bus, LogOut, LayoutDashboard, Ticket, Map, Bell, Radio, ClipboardCheck, UserCircle, CirclePlus } from "lucide-react";
+import { LogOut, LayoutDashboard, Ticket, Map, Bell, Radio, ClipboardCheck, UserCircle, CirclePlus } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useUnreadCount } from "@/hooks/use-unread-count";
 import { Button } from "@/components/ui/button";
@@ -20,9 +20,11 @@ export function AppNav() {
       <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Bus className="h-5 w-5" />
-            </div>
+            <img
+              src="/image/coasterBus-logo.png"
+              alt="CoasterBusForU logo"
+              className="h-9 w-9 rounded-lg object-contain"
+            />
             <div className="flex flex-col leading-none">
               <span className="font-display text-base font-bold tracking-tight">
                 CoasterBus<span className="text-amber">ForU</span>
