@@ -466,7 +466,7 @@ function ProfilePage() {
     return (
       <div className="min-h-screen bg-background">
         <AppNav />
-        <main className="container mx-auto max-w-lg px-4 py-10">
+        <main className="container mx-auto max-w-lg px-4 py-10 pb-28 md:pb-10">
           <div className="space-y-4 animate-pulse">
             <div className="h-8 w-48 rounded bg-secondary" />
             <div className="h-4 w-64 rounded bg-secondary" />
@@ -485,7 +485,7 @@ function ProfilePage() {
   return (
     <div className="min-h-screen bg-background">
       <AppNav />
-      <main className="container mx-auto max-w-lg px-4 py-10">
+      <main className="container mx-auto max-w-lg px-4 py-10 pb-28 md:pb-10">
         {staffRole ? (
           <StaffProfile
             user={{ email: user?.email ?? null }}
