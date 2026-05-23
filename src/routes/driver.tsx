@@ -9,7 +9,7 @@ import { useBusPickupStops } from "@/hooks/use-bus-pickup-stops";
 import { DriverPickupMap } from "@/components/driver/DriverPickupMap";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Bus, MapPin, Radio, Square, Shield } from "lucide-react";
+import { Bus, MapPin, Shield, Navigation, Wifi, WifiOff } from "lucide-react";
 
 export const Route = createFileRoute("/driver")({
   component: DriverPage,
@@ -27,7 +27,7 @@ type BusRow = {
 function DriverPage() {
   const { user, loading, isDriver, roles } = useAuth();
   const navigate = useNavigate();
-  const { sharing, lastFix, startSharing, stopSharing } = useDriverLocation();
+  const { sharing, lastFix, startSharing, stopSharing, updateStatus } = useDriverLocation();
   const [buses, setBuses] = useState<BusRow[]>([]);
   const [granting, setGranting] = useState(false);
 
@@ -72,6 +72,18 @@ function DriverPage() {
 
   const myBus = buses.find((b) => b.driverId === user?.uid) ?? null;
 
+  // Auto-start GPS as soon as the driver has a claimed bus.
+  // This runs on page load (if bus was already claimed) and after claiming.
+  useEffect(() => {
+    if (myBus && !sharing) {
+      startSharing(myBus.id, myBus.status);
+    }
+    // If the bus was released, stop sharing
+    if (!myBus && sharing) {
+      stopSharing();
+    }
+  }, [myBus?.id, sharing, startSharing, stopSharing]);
+
   const {
     highwayOnMap,
     highwayMissingGps,
@@ -99,7 +111,7 @@ function DriverPage() {
     const snap = await getDoc(doc(db, "buses", busId));
     if (snap.data()?.driverId) { toast.error("Bus already claimed."); return; }
     await updateDoc(doc(db, "buses", busId), { driverId: user.uid });
-    toast.success("Bus claimed. Start sharing your location.");
+    toast.success("Bus claimed. GPS tracking started automatically.");
   };
 
   const release = async (busId: string) => {
@@ -117,6 +129,9 @@ function DriverPage() {
    * - All other transitions: just update the bus document.
    */
   const setBusStatus = async (busId: string, newStatus: string) => {
+    // Keep the GPS context in sync with the new status
+    updateStatus(newStatus);
+
     if (newStatus === "boarding") {
       try {
         const busSnap = await getDoc(doc(db, "buses", busId));
@@ -223,28 +238,45 @@ function DriverPage() {
                   {myBus.routeName} · {myBus.routeOrigin} → {myBus.routeDest}
                 </p>
               </div>
-              <span className={`flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold
-                ${sharing ? "bg-emerald-500/15 text-emerald-400" : "bg-secondary text-foreground/70"}`}>
-                <span className={`h-2 w-2 rounded-full ${sharing ? "animate-pulse bg-emerald-400" : "bg-muted-foreground"}`} />
-                {sharing ? "LIVE" : "OFFLINE"}
+              <span className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold
+                ${sharing && lastFix ? "bg-emerald-500/15 text-emerald-400" : sharing ? "bg-amber/15 text-amber" : "bg-secondary text-foreground/70"}`}>
+                {sharing && lastFix ? (
+                  <><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> LIVE</>
+                ) : sharing ? (
+                  <><Navigation className="h-3 w-3 animate-pulse" /> ACQUIRING</>
+                ) : (
+                  <><WifiOff className="h-3 w-3" /> OFFLINE</>
+                )}
               </span>
             </div>
 
             <div className="mt-6 grid gap-4 md:grid-cols-3">
-              {/* Last GPS fix */}
+              {/* GPS status — automatic, no manual button needed */}
               <div className="rounded-xl border border-border bg-background p-4">
-                <div className="text-xs uppercase tracking-widest text-muted-foreground">Last fix</div>
-                {lastFix ? (
+                <div className="text-xs uppercase tracking-widest text-muted-foreground">GPS</div>
+                {sharing && lastFix ? (
                   <>
-                    <div className="mt-1 font-mono text-sm">
+                    <div className="mt-1 flex items-center gap-2">
+                      <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+                      <span className="text-sm font-semibold text-emerald-400">Live</span>
+                    </div>
+                    <div className="mt-1 font-mono text-xs text-muted-foreground">
                       {lastFix.lat.toFixed(5)}, {lastFix.lng.toFixed(5)}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {lastFix.at.toLocaleTimeString()}
+                      {lastFix.at.toLocaleTimeString()} · ±{Math.round(lastFix.accuracy)}m
                     </div>
                   </>
+                ) : sharing && !lastFix ? (
+                  <div className="mt-1 flex items-center gap-2 text-sm text-amber">
+                    <Navigation className="h-4 w-4 animate-pulse" />
+                    Acquiring GPS fix…
+                  </div>
                 ) : (
-                  <div className="mt-1 text-sm text-muted-foreground">No fix yet</div>
+                  <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+                    <WifiOff className="h-4 w-4" />
+                    GPS inactive
+                  </div>
                 )}
               </div>
 
@@ -276,25 +308,13 @@ function DriverPage() {
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              {!sharing ? (
-                <Button
-                  onClick={() => startSharing(myBus.id, myBus.status)}
-                  className="gap-2"
-                >
-                  <Radio className="h-4 w-4" /> Start live location
-                </Button>
-              ) : (
-                <Button onClick={stopSharing} variant="secondary" className="gap-2">
-                  <Square className="h-4 w-4" /> Stop sharing
-                </Button>
-              )}
               <Button onClick={() => release(myBus.id)} variant="ghost">
                 Release bus
               </Button>
             </div>
 
             <p className="mt-3 text-xs text-muted-foreground">
-              GPS sharing continues even if you navigate away — keep this tab open while driving.
+              GPS location is shared automatically while you have a bus claimed. Keep this tab open while driving.
             </p>
 
             <DriverPickupMap
