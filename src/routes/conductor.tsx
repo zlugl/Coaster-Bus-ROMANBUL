@@ -324,7 +324,7 @@ function ConductorPage() {
                   <td className="px-4 py-3"><div className="flex flex-wrap justify-end gap-1">
                     {t.paymentStatus === "pending" && t.status !== "cancelled" && t.status !== "completed" && <Button size="sm" variant="outline" className="gap-1 text-success border-success/30 hover:bg-success/10" onClick={() => handleVerifyPayment(t.id)}><CheckCircle2 className="h-3 w-3" /> Verify</Button>}
                     {t.status !== "boarded" && t.status !== "cancelled" && t.status !== "completed" && <Button size="sm" variant="secondary" className="gap-1" onClick={() => setStatus(t.id, "boarded")}><CheckCircle2 className="h-4 w-4" /> Board</Button>}
-                    {t.status === "boarded" && <Button size="sm" variant="ghost" className="gap-1" onClick={() => setStatus(t.id, "completed")}>Complete</Button>}
+                    {t.status === "boarded" && <span className="text-xs text-muted-foreground italic px-1">Student ends trip</span>}
                     {t.status !== "cancelled" && t.status !== "completed" && <Button size="sm" variant="ghost" className="gap-1 text-destructive" onClick={() => setStatus(t.id, "cancelled")}><XCircle className="h-4 w-4" /> No-show</Button>}
                   </div></td>
                 </tr>

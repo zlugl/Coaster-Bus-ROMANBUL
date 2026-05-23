@@ -66,7 +66,7 @@ type Ticket = {
   routeDest?: string;
 };
 
-const ACTIVE_STATUSES = ["queued", "confirmed"];
+const ACTIVE_STATUSES = ["queued", "confirmed", "boarded"];
 
 function TicketsPage() {
   const { user, loading } = useAuth();
@@ -372,6 +372,8 @@ function TicketCard({
 }) {
   const isActive = ACTIVE_STATUSES.includes(t.status);
   const isQueued = t.status === "queued";
+  const isBoarded = t.status === "boarded";
+  const canCancel = ["queued", "confirmed"].includes(t.status);
   const isPaid = t.paymentStatus === "paid";
   const liveQueueDisplay = isQueued
     ? `#${t.queuePosition} in queue`
@@ -490,7 +492,20 @@ function TicketCard({
           </span>
         </div>
 
-        {isHero && isActive && (
+        {isHero && isBoarded && (
+          <div className="sm:col-span-2 flex items-start gap-3 rounded-xl border border-success/30 bg-success/10 p-4 animate-fade-in">
+            <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
+            <div>
+              <p className="font-semibold text-success">You're on board!</p>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                Tap <strong>I've arrived — end trip</strong> when you reach your destination.
+                This frees your seat for the next student.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {isHero && isActive && !isBoarded && (
           <div className="sm:col-span-2 flex flex-col items-center gap-3 rounded-xl border border-border bg-white px-4 py-6 animate-scale-in">
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               Show conductor when boarding
@@ -536,14 +551,23 @@ function TicketCard({
                 {showQr ? "Hide QR" : "Show QR"}
               </Button>
             )}
-            {isActive && onCancel && (
+            {isActive && onCancel && canCancel && (
               <Button size="sm" variant="ghost" className="btn-press" onClick={onCancel}>
                 <X className="h-4 w-4" /> Cancel
               </Button>
             )}
             {isActive && onMarkArrived && (
-              <Button size="sm" variant="default" className="btn-press col-span-2 gap-1.5 sm:col-span-1" onClick={onMarkArrived}>
-                <Check className="h-4 w-4" /> End trip
+              <Button
+                size="sm"
+                variant={isBoarded ? "default" : "outline"}
+                className={cn(
+                  "btn-press col-span-2 gap-1.5 sm:col-span-1",
+                  isBoarded && "bg-success text-success-foreground hover:bg-success/90",
+                )}
+                onClick={onMarkArrived}
+              >
+                <Check className="h-4 w-4" />
+                {isBoarded ? "I've arrived — end trip" : "End trip"}
               </Button>
             )}
             {t.status === "completed" && onDelete && (
