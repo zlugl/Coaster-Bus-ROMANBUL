@@ -2,14 +2,5 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".output/public",
   "installCommand": "npm install --legacy-peer-deps",
-  "framework": null,
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api/server" }
-  ],
-  "functions": {
-    "api/server.js": {
-      "runtime": "nodejs20.x",
-      "memory": 1024
-    }
-  }
+  "framework": null
 }
