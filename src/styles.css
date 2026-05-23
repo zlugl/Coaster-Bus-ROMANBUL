@@ -1,0 +1,244 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+@import "leaflet/dist/leaflet.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+}
+
+:root {
+  --radius: 0.75rem;
+  /* Transit Navy palette */
+  --background: oklch(0.985 0.005 240);
+  --foreground: oklch(0.18 0.04 250);
+
+  --surface: oklch(0.22 0.06 250);          /* deep navy */
+  --surface-foreground: oklch(0.98 0.01 240);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.04 250);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.04 250);
+
+  --primary: oklch(0.22 0.06 250);          /* navy 0f2847 */
+  --primary-foreground: oklch(0.985 0.01 240);
+
+  --secondary: oklch(0.95 0.01 240);
+  --secondary-foreground: oklch(0.22 0.06 250);
+
+  --accent: oklch(0.82 0.16 80);            /* amber fbbf24 */
+  --accent-foreground: oklch(0.18 0.04 250);
+
+  --muted: oklch(0.96 0.005 240);
+  --muted-foreground: oklch(0.5 0.02 250);
+
+  --success: oklch(0.72 0.14 155);
+  --success-foreground: oklch(0.12 0.04 160);
+  --warning: oklch(0.82 0.16 80);
+  --warning-foreground: oklch(0.18 0.04 250);
+  --destructive: oklch(0.58 0.22 27);
+  --destructive-foreground: oklch(0.98 0.01 240);
+
+  --border: oklch(0.9 0.01 240);
+  --input: oklch(0.9 0.01 240);
+  --ring: oklch(0.82 0.16 80);
+}
+
+.dark {
+  --background: oklch(0.12 0.03 250);
+  --foreground: oklch(0.98 0.01 240);
+  --surface: oklch(0.16 0.04 250);
+  --surface-foreground: oklch(0.98 0.01 240);
+  --card: oklch(0.18 0.04 250);
+  --card-foreground: oklch(0.98 0.01 240);
+  --popover: oklch(0.18 0.04 250);
+  --popover-foreground: oklch(0.98 0.01 240);
+  --primary: oklch(0.82 0.16 80);
+  --primary-foreground: oklch(0.18 0.04 250);
+  --secondary: oklch(0.24 0.05 250);
+  --secondary-foreground: oklch(0.98 0.01 240);
+  --accent: oklch(0.82 0.16 80);
+  --accent-foreground: oklch(0.18 0.04 250);
+  --muted: oklch(0.22 0.04 250);
+  --muted-foreground: oklch(0.7 0.02 240);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.82 0.16 80);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+
+  /* Leaflet — explicit sizing so tiles render inside flex/mobile layouts */
+  .leaflet-container {
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background: #d4d4d8;
+    font-family: inherit;
+  }
+  .leaflet-pane { z-index: 1; }
+  .leaflet-top,
+  .leaflet-bottom { z-index: 2; }
+  .leaflet-marker-icon.leaflet-div-icon,
+  .leaflet-div-icon {
+    background: transparent !important;
+    border: none !important;
+  }
+  .pickup-marker-icon {
+    background: transparent !important;
+    border: none !important;
+  }
+  .pickup-seat-tooltip {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .pickup-seat-tooltip::before { display: none !important; }
+}
+
+@layer utilities {
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--surface-foreground) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--surface-foreground) 6%, transparent) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .text-amber { color: oklch(0.82 0.16 80); }
+
+  /* Leaflet town label tooltip */
+  .leaflet-town-label {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #fbbf24 !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    white-space: nowrap;
+  }
+  .leaflet-town-label::before { display: none !important; }
+
+  /* Safe area for mobile bottom nav */
+  .safe-bottom {
+    padding-bottom: max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem));
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out both;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .stagger-1 { animation-delay: 0.06s; }
+  .stagger-2 { animation-delay: 0.12s; }
+  .stagger-3 { animation-delay: 0.18s; }
+  .stagger-4 { animation-delay: 0.24s; }
+
+  .card-interactive {
+    @apply transition-all duration-300 ease-out;
+    @apply hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5;
+    @apply active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0;
+  }
+
+  .btn-press {
+    @apply transition-transform duration-200 active:scale-95 motion-reduce:active:scale-100;
+  }
+
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-secondary) 0%,
+      color-mix(in oklch, var(--color-secondary) 50%, white) 50%,
+      var(--color-secondary) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+
+  .glass-panel {
+    @apply border border-border/80 bg-card/90 backdrop-blur-md;
+  }
+}
